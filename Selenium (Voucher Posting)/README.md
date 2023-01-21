@@ -1,4 +1,4 @@
-# Selenium--Check-Degree-Status-
+# Selenium--Auto-Voucher-Posting-
  Bot that login and search for ids provided in excel and prepare report
 
 ## Description:
