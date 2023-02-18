@@ -12,10 +12,28 @@ from selenium.webdriver.common.keys import Keys
 # from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.support import expected_conditions as EC
 
+import os
 import openpyxl as xl
 from getpass import getpass
 import os.path, sys
 
+# folder_path = ""
+# with open("location.ini", "r") as folder_root:
+#     folder_path = folder_root.read() + "\\"
+
+# for files in os.listdir(folder_path):
+#    os.rename(folder_path + files, folder_path + "Provisional Certificate - " + files)
+
+# save_file = []
+# with open("sss.txt", "r") as remove:
+#     for i in remove.readlines():
+#         file_to_remove = i.strip("\n")
+#         save_file.append(folder_path + file_to_remove)
+
+
+# for filename in os.listdir(folder_path):
+#     if folder_path + filename not in save_file:
+#         os.remove(folder_path + filename)
 
 JS_DROP_FILE = """
     var target = arguments[0],
@@ -81,56 +99,39 @@ general_key.send_keys("123456")
 sign_in = driver.find_element(by=By.ID, value="LOGIN")
 sign_in.click() 
 
-for directory in os.listdir(folder_path):
-    if os.path.isdir(folder_path + "\\" + directory):               
-        count = 0
-        while count < 3:
-            count += 1
-            try:
-                stu_id = driver.find_element(by=By.ID, value="P0_V_DIRECT_STUDENT_ID")        
-                stu_id.clear()
-                stu_id.send_keys(directory)
-                stu_id.send_keys(Keys.ENTER)  
-                time.sleep(1)
-                count = 0    
-                break
-            except Exception as e:
-                time.sleep(1)   
-        for filename in os.listdir(folder_path + "\\" + directory + "\\"):
-            # print(directory + "-->" + filename)
-            try:
-                document_type = filename.split(" - ")[0]  
-                multiple_files = ""
-                if filename.split(" - ")[1].__contains__("("):
-                    multiple_files = " (" + filename.split("(")[1].split(".")[0]      
-                while count < 3:
-                    count += 1
-                    try:     
-                        select_item = Select(driver.find_element(by=By.ID, value="P838_DOC_TYPE_ID"))
-                        if document_type not in doc_types:
-                            select_item.select_by_visible_text("Others") 
-                        else:                     
-                            select_item.select_by_visible_text(document_type) 
-                        description = driver.find_element(by=By.ID, value="P838_DESCRIPTION") 
-                        description.clear()               
-                        description.send_keys(document_type + multiple_files)
-                        upload_file = driver.find_element(by=By.CLASS_NAME, value="apex-item-filedrop-body").parent
-                        file_input = driver.execute_script(JS_DROP_FILE, driver.find_element(by=By.CLASS_NAME, value="apex-item-filedrop-body"), 0, 0)
-                        file_input.send_keys(folder_path + "\\" + directory + "\\" + filename)
-                        push_doc = driver.find_element(by=By.ID, value="B4877606197040446")
-                        push_doc.click()                         
-                        count = 0
-                        time.sleep(1)
-                        try:
-                            error_log = driver.find_element(by=By.ID, value="APEX_ERROR_MESSAGE")
-                            print("Document: " + str(filename) + " --> " + error_log.text.split("\n")[1])
-                        except Exception as e:
-                            pass
-                        break
-                    except Exception as e:                        
-                        time.sleep(1)                
-            except IndexError:
-                print("no id found in file name. File not uploaded")
+# all_doc = driver.find_element(by=By.ID, value="R7988424047886679_tab")       
+# all_doc.click()
 
+for filename in os.listdir(folder_path):
+    count = 0
+    while count < 3:
+        count += 1
+        try:            
+            stu_id = driver.find_element(by=By.ID, value="P0_V_DIRECT_STUDENT_ID")        
+            stu_id.clear()
+            document_type = filename.split(" - ")[0]  
+            student_id = filename.split(" - ")[1].split(".")[0]  
+            stu_id.send_keys(student_id)
+            stu_id.send_keys(Keys.ENTER)
+            time.sleep(1)  
+            select_item = Select(driver.find_element(by=By.ID, value="P838_DOC_TYPE_ID"))
+            if document_type not in doc_types:
+                select_item.select_by_visible_text("Others") 
+            else:                     
+                select_item.select_by_visible_text(document_type) 
+            description = driver.find_element(by=By.ID, value="P838_DESCRIPTION") 
+            description.clear()               
+            description.send_keys(document_type)
+            upload_file = driver.find_element(by=By.CLASS_NAME, value="apex-item-filedrop-body").parent
+            file_input = driver.execute_script(JS_DROP_FILE, driver.find_element(by=By.CLASS_NAME, value="apex-item-filedrop-body"), 0, 0)
+            file_input.send_keys(folder_path + filename)            
+            push_doc = driver.find_element(by=By.ID, value="B4877606197040446")
+            push_doc.click()                    
+            count = 0   
+            time.sleep(1) 
+            break
+        except Exception as e:
+            time.sleep(1) 
+    
 input("Review Files If Required. Press Enter To Exit...")
 

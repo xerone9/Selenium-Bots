@@ -1,21 +1,25 @@
-import selenium.common.exceptions
-import time
-from selenium.webdriver.support.ui import Select
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
+
+import selenium.common.exceptions
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+import time
+from getpass import getpass
 import csv
 
 
 user_id = input("Enter User ID: ")
-user_password = input("Enter Password: ")
+user_password = getpass()
 file_name = input("Enter CSV File Name (with extension): ")
 
 chrome_options = Options() 
@@ -45,14 +49,20 @@ with open(file_name, "r") as csv_file:
         line_count += 1           
         voucher_no = driver.find_element(by=By.ID, value="P740_VOUCHER_NO")
         count = 0
-        # wait for element "P740_VOUCHER_NO_TO_SEARCH"
         while count < 3:
             count += 1
             try:         
                 voucher_no.clear()
                 voucher_no.send_keys(voucher[1])
                 voucher_no.send_keys(Keys.ENTER)
+                time.sleep(1)
+                try:
+                    error_log = driver.find_element(by=By.ID, value="APEX_ERROR_MESSAGE")
+                    print("voucher No: " + str(voucher[1]) + " --> " + error_log.text.split("\n")[1])
+                except Exception as e:
+                    pass
                 break
             except Exception as e:
                 time.sleep(1)
+
 driver.close()

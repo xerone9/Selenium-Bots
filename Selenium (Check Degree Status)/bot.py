@@ -11,11 +11,12 @@ from selenium.webdriver.common.keys import Keys
 # from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.support import expected_conditions as EC
 
+from getpass import getpass
 import openpyxl as xl
 
 
 user_id = input("Enter User ID: ")
-user_password = input("Enter Password: ")
+user_password = getpass()
 
 PATH = "C:\Program Files (x86)\chromedriver.exe"
 chrome_options = Options() 
