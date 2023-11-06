@@ -18,15 +18,16 @@ from getpass import getpass
 import csv
 
 
-user_id = input("Enter User ID: ")
-user_password = getpass()
-file_name = input("Enter CSV File Name (with extension): ")
+user_id = "800"
+user_password = "03009293477"
+file_name = "01Aug23.csv"
 
-chrome_options = Options() 
+PATH = "C:\Program Files (x86)\chromedriver.exe"
+chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
 
 driver = webdriver.Chrome(options=chrome_options)
-driver.get("http://172.16.0.6:81/ords/f?p=700:740:14062566633627.:::740:hide_unhide_region:1&cs=15D3B1DF29B0283C9835B2D43941D190D")
+driver.get("http://faculty.induscms.com:81/ords/f?p=700:740:8624860953875.:::740:hide_unhide_region:1&cs=15D3B1DF29B0283C9835B2D43941D190D")
 
 
 user_name = driver.find_element(by=By.ID, value="P101_USERNAME")
@@ -66,3 +67,18 @@ with open(file_name, "r") as csv_file:
                 time.sleep(1)
 
 driver.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

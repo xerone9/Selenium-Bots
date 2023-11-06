@@ -16,18 +16,18 @@ import openpyxl as xl
 
 
 user_id = input("Enter User ID: ")
-user_password = getpass()
+# user_password = getpass()
+user_password = input("Enter Password: ")
 
-PATH = "C:\Program Files (x86)\chromedriver.exe"
-chrome_options = Options() 
+chrome_options = Options()
+chrome_options.add_argument("--disable-popup-blocking")
 chrome_options.add_experimental_option("detach", True)
-
 driver = webdriver.Chrome(options=chrome_options)
 
-wb = xl.load_workbook("List of Files for Scaning.xlsx", data_only=True)
+wb = xl.load_workbook("Usman Sheet Forward.xlsx", data_only=True)
 sheet = wb.worksheets[0]
 
-driver.get("http://172.16.0.6:81/ords/f?p=700:LOGIN:5055859720039:::::")
+driver.get("http://faculty.induscms.com:81/ords/f?p=700:LOGIN:15199114455468:::::")
 
 user_name = driver.find_element(by=By.ID, value="P101_USERNAME")
 user_name.send_keys(user_id)
@@ -38,8 +38,11 @@ password.send_keys(user_password)
 general_key = driver.find_element(by=By.ID, value="P101_LOGIN_CODE")
 general_key.send_keys("123456")
 
+
 sign_in = driver.find_element(by=By.ID, value="P101_LOGIN")
 sign_in.click()
+
+time.sleep(5)
 
 exam = driver.find_element(by=By.CLASS_NAME, value ="t-Tabs-label")
 exam.click()
@@ -47,7 +50,7 @@ exam.click()
 
 for row in range(1, sheet.max_row + 1):
     cell = sheet.cell(row, 2)
-    if cell.value is not None:        
+    if cell.value is not None:
         student = cell.value
         check_id = student
         stu_id = driver.find_element(by=By.ID, value="P2790_V_DIRECT_STUDENT_ID")
@@ -55,7 +58,7 @@ for row in range(1, sheet.max_row + 1):
         # wait for element "P2790_V_DIRECT_STUDENT_ID" to be loaded on page
         while count < 3:
             count += 1
-            try:                
+            try:
                 stu_id.clear()
                 stu_id.send_keys(check_id)
                 stu_id.send_keys(Keys.ENTER)
@@ -73,8 +76,8 @@ for row in range(1, sheet.max_row + 1):
             excel_date.value = date
             excel_degree_no.value = degree_no
             excel_status.value = status
-            wb.save("List of Files for Scaning.xlsx")
-            print(check_id.strip(), date, degree_no, status)            
+            wb.save("Usman Sheet Forward.xlsx")
+            print(check_id.strip(), date, degree_no, status)
         except selenium.common.exceptions.NoSuchElementException:
             print(check_id.strip() + " - Degree No Issued")
 driver.close()
