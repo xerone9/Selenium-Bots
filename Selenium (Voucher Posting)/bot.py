@@ -18,8 +18,8 @@ from getpass import getpass
 import csv
 
 
-user_id = "800"
-user_password = "03009293477"
+user_id = ""
+user_password = ""
 file_name = "01Aug23.csv"
 
 PATH = "C:\Program Files (x86)\chromedriver.exe"
